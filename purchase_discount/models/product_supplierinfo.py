@@ -22,6 +22,14 @@ class ProductSupplierInfo(models.Model):
         for record in self:
             record.discount = record.partner_id.default_supplierinfo_discount
 
+    _sql_constraints = [
+        (
+            "discount_limit",
+            "CHECK (discount <= 100.0)",
+            "Supplier discount must be lower than 100%.",
+        )
+    ]
+
     @api.model
     def _get_po_to_supplierinfo_synced_fields(self):
         """Overwrite this method for adding other fields to be synchronized
@@ -34,7 +42,7 @@ class ProductSupplierInfo(models.Model):
         """Insert discount (or others) from context from purchase.order's
         _add_supplier_to_product method"""
         for vals in vals_list:
-            product_tmpl_id = vals["product_tmpl_id"]
+            product_tmpl_id = vals.get("product_tmpl_id")
             po_line_map = self.env.context.get("po_line_map", {})
             if product_tmpl_id in po_line_map:
                 po_line = po_line_map[product_tmpl_id]
