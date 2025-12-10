@@ -10,4 +10,5 @@
     "maintainers": ["ernestotejeda"],
     "license": "AGPL-3",
     "depends": ["purchase"],
+    "installable": True,
 }
